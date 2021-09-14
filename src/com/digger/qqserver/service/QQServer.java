@@ -45,6 +45,7 @@ public class QQServer {
                     //把该线程放入集合中进行管理
                     ManageServerConnectClientThread.addServerConnectClientThread(u.getId(),serverConnectClientThread);
                 }else{//登录失败
+                    System.out.println("用户id="+u.getId() + "密码=" + u.getPassword() + "登录失败");
                     message.setMessageType(MessageType.MESSAGE_LOGIN_FAIL);
                     //将message对象回复给客户端
                     oos.writeObject(message);
