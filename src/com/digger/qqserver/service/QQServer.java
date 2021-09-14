@@ -9,6 +9,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Author: Digger
@@ -17,6 +19,29 @@ import java.net.Socket;
  */
 public class QQServer {
     private ServerSocket ss = null;
+
+    //使用ConcurrentHashMap，可以处理并发的集合，没有线程安全问题；线程同步处理，在多线程情况下线程安全
+    //创建一个HashMap来存放合法用户
+    private static ConcurrentHashMap<String,User> validUsers = new ConcurrentHashMap<>();
+
+    //在静态代码块中初始化validUsers
+    static {
+        validUsers.put("100",new User("100","123456"));
+        validUsers.put("200",new User("200","123456"));
+        validUsers.put("300",new User("300","123456"));
+        validUsers.put("至尊宝",new User("至尊宝","123456"));
+        validUsers.put("紫霞仙子",new User("紫霞仙子","123456"));
+        validUsers.put("赤脚大仙",new User("赤脚大仙","123456"));
+    }
+
+    //验证用户登录
+    public boolean checkUserLogin(String userId,String password){
+        if(validUsers.get(userId) != null && validUsers.get(userId).getPassword().equals(password)){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     public QQServer() {
         //注意：端口可以写在配置文件
@@ -34,7 +59,7 @@ public class QQServer {
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                 //创建一个Message对象，回复给客户端
                 Message message = new Message();
-                if(u.getId().equals("100") && u.getPassword().equals("123")){//登录成功
+                if(checkUserLogin(u.getId(),u.getPassword())){//登录成功
                     message.setMessageType(MessageType.MESSAGE_LOGIN_SUCCEED);
                     //将message对象回复给客户端
                     oos.writeObject(message);
@@ -50,7 +75,6 @@ public class QQServer {
                     //将message对象回复给客户端
                     oos.writeObject(message);
                     socket.close();
-
                 }
             }
         } catch (Exception e) {

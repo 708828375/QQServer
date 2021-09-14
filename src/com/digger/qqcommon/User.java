@@ -12,10 +12,15 @@ import java.io.Serializable;
  **/
 public class User implements Serializable {
 
-    private static final long SerialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     private String id;
     private String userName;
     private String password;
+
+    public User(String userId, String pwd){
+        this.id = userId;
+        this.password = pwd;
+    }
 
     public String getId() {
         return id;
