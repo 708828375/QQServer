@@ -20,6 +20,11 @@ public class ManageServerConnectClientThread {
         return mp.get(userId);
     }
 
+    //移除一个线程
+    public static void removeServerConnectClientThread(String userId){
+        mp.remove(userId);
+    }
+
     //返回在线用户列表
     public static String getOnlineUser(){
         String s = "";
