@@ -19,4 +19,14 @@ public class ManageServerConnectClientThread {
     public static ServerConnectClientThread getServerConnectClientThread(String userId){
         return mp.get(userId);
     }
+
+    //返回在线用户列表
+    public static String getOnlineUser(){
+        String s = "";
+        //集合遍历，遍历HashMap的key
+        for (String key : mp.keySet()){
+            s += key + " ";
+        }
+        return s;
+    }
 }
