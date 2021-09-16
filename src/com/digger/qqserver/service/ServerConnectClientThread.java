@@ -48,6 +48,10 @@ public class ServerConnectClientThread extends Thread{
                     socket.close();
                     //退出线程
                     break;
+                }else if(MessageType.MESSAGE_PRIVATE_CHAT.equals(message.getMessageType())){//收到客户端发来的私聊消息
+                    //将私聊消息进行转发
+                    ObjectOutputStream oos = new ObjectOutputStream(ManageServerConnectClientThread.getServerConnectClientThread(message.getGetter()).socket.getOutputStream());
+                    oos.writeObject(message);
                 }else{
                     System.out.println("其它类型的消息，暂时不做处理。。。。");
                 }
