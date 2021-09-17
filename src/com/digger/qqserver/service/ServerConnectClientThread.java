@@ -59,17 +59,17 @@ public class ServerConnectClientThread extends Thread{
                     //将消息发送给除了他以外的其他在线用户
                     ObjectOutputStream oos = null;
                     //获取所有在线的用户线程
-                    HashMap<String, ClientConnectServerThread> map = ManageClientConnectServerThread.getHm();
+                    HashMap<String, ServerConnectClientThread> map = ManageServerConnectClientThread.getMp();
                     Iterator iterator = map.entrySet().iterator();
                     while (iterator.hasNext()) {
                         Map.Entry entry = (Map.Entry) iterator.next();
                         String userId = (String) entry.getKey();
-                        ClientConnectServerThread thread = (ClientConnectServerThread) entry.getValue();
+                        ServerConnectClientThread thread = (ServerConnectClientThread) entry.getValue();
                         //判断线程不是发送者与服务端连接的线程
-                        if (userId.equals(sender)) {
+                        if (!userId.equals(message.getSender())) {
                             try {
                                 //将消息发给所有用户
-                                oos = new ObjectOutputStream(thread.getSocket().getOutputStream());
+                                oos = new ObjectOutputStream(thread.socket.getOutputStream());
                                 oos.writeObject(message);
                             } catch (IOException e) {
                                 e.printStackTrace();

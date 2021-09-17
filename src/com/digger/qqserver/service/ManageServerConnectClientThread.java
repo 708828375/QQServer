@@ -11,7 +11,11 @@ public class ManageServerConnectClientThread {
     //用来存储用户id和对应得线程
     private static HashMap<String,ServerConnectClientThread> mp = new HashMap<>();
 
-    public static void addServerConnectClientThread(String userId,ServerConnectClientThread serverConnectClientThread){
+    public static HashMap<String, ServerConnectClientThread> getMp() {
+        return mp;
+    }
+
+    public static void addServerConnectClientThread(String userId, ServerConnectClientThread serverConnectClientThread){
         mp.put(userId,serverConnectClientThread);
     }
 
