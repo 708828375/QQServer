@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @Author: Digger
@@ -52,7 +55,29 @@ public class ServerConnectClientThread extends Thread{
                     //将私聊消息进行转发
                     ObjectOutputStream oos = new ObjectOutputStream(ManageServerConnectClientThread.getServerConnectClientThread(message.getGetter()).socket.getOutputStream());
                     oos.writeObject(message);
-                }else{
+                }else if(MessageType.MESSAGE_GROUP_CHAT.equals(message.getMessageType())){//收到的是群聊消息
+                    //将消息发送给除了他以外的其他在线用户
+                    ObjectOutputStream oos = null;
+                    //获取所有在线的用户线程
+                    HashMap<String, ClientConnectServerThread> map = ManageClientConnectServerThread.getHm();
+                    Iterator iterator = map.entrySet().iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry entry = (Map.Entry) iterator.next();
+                        String userId = (String) entry.getKey();
+                        ClientConnectServerThread thread = (ClientConnectServerThread) entry.getValue();
+                        //判断线程不是发送者与服务端连接的线程
+                        if (userId.equals(sender)) {
+                            try {
+                                //将消息发给所有用户
+                                oos = new ObjectOutputStream(thread.getSocket().getOutputStream());
+                                oos.writeObject(message);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+                } else{
                     System.out.println("其它类型的消息，暂时不做处理。。。。");
                 }
 

@@ -14,4 +14,5 @@ public interface MessageType {
     String MESSAGE_RET_ONLINE_FRIEND = "5"; //返回在线用户列表
     String MESSAGE_CLIENT_EXIT = "6"; //客户端请求退出
     String MESSAGE_PRIVATE_CHAT = "7"; //用户私聊的消息
+    String MESSAGE_GROUP_CHAT = "8"; //用户的群聊消息
 }
