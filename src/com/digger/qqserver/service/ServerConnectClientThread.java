@@ -20,6 +20,10 @@ public class ServerConnectClientThread extends Thread{
     private Socket socket;
     private String userId;
 
+    public Socket getSocket() {
+        return socket;
+    }
+
     public ServerConnectClientThread(Socket socket, String userId) {
         this.socket = socket;
         this.userId = userId;
@@ -77,7 +81,11 @@ public class ServerConnectClientThread extends Thread{
                         }
 
                     }
-                } else{
+                }else if(MessageType.MESSAGE_FILE_MES.equals(message.getMessageType())){//如果收到的是文件消息
+                    //直接进行转发
+                    ObjectOutputStream oos = new ObjectOutputStream(ManageServerConnectClientThread.getServerConnectClientThread(message.getGetter()).socket.getOutputStream());
+                    oos.writeObject(message);
+                }else{
                     System.out.println("其它类型的消息，暂时不做处理。。。。");
                 }
 
