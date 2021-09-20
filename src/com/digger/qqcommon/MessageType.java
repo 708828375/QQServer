@@ -15,4 +15,5 @@ public interface MessageType {
     String MESSAGE_CLIENT_EXIT = "6"; //客户端请求退出
     String MESSAGE_PRIVATE_CHAT = "7"; //用户私聊的消息
     String MESSAGE_GROUP_CHAT = "8"; //用户的群聊消息
+    String MESSAGE_FILE_MES = "9"; //文件传输消息
 }
