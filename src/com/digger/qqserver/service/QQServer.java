@@ -24,6 +24,7 @@ public class QQServer {
     //使用ConcurrentHashMap，可以处理并发的集合，没有线程安全问题；线程同步处理，在多线程情况下线程安全
     //创建一个HashMap来存放合法用户
     private static ConcurrentHashMap<String,User> validUsers = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, ArrayList<Message>> offlineMessage = new ConcurrentHashMap<>();//用来存储离线用户信息
 
     //在静态代码块中初始化validUsers
     static {
@@ -41,6 +42,20 @@ public class QQServer {
             return true;
         }else{
             return false;
+        }
+    }
+
+    //检查是否有离线消息发送给用户
+    public void sendOfflineMessage(String getterId, ArrayList<Message> messages){
+        //获取与getterId连接的输出流
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(ManageServerConnectClientThread.getServerConnectClientThread(getterId).getSocket().getOutputStream());
+            //将消息发送给对应的用户
+            for(Message message : messages){
+                oos.writeObject(message);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -67,11 +82,16 @@ public class QQServer {
                     //将message对象回复给客户端
                     oos.writeObject(message);
                     //创建一个线程和客户端保持通信，该线程需要持有socket对象
-                    ServerConnectClientThread serverConnectClientThread = new ServerConnectClientThread(socket, u.getId());
+                    ServerConnectClientThread serverConnectClientThread = new ServerConnectClientThread(socket, u.getId(), offlineMessage);
                     //启动该线程
                     serverConnectClientThread.start();
                     //把该线程放入集合中进行管理
                     ManageServerConnectClientThread.addServerConnectClientThread(u.getId(),serverConnectClientThread);
+
+                    //如果用户上线，则查找是否有离线消息，如果有则发送给用户
+                    if(!offlineMessage.isEmpty() && !offlineMessage.get(u.getId()).isEmpty()){//有其他用户发送给该用户的离线信息
+                        sendOfflineMessage(u.getId(), offlineMessage.get(u.getId()));
+                    }
                 }else{//登录失败
                     System.out.println("用户id="+u.getId() + "密码=" + u.getPassword() + "登录失败");
                     message.setMessageType(MessageType.MESSAGE_LOGIN_FAIL);

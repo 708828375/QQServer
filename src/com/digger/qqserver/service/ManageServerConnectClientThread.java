@@ -38,4 +38,14 @@ public class ManageServerConnectClientThread {
         }
         return s;
     }
+
+    //判断当前用户是否在线
+    public static boolean isOnline(String userId){
+        for(String key : mp.keySet()){
+            if(userId.equals(key)){
+                return true;
+            }
+        }
+        return false;
+    }
 }
