@@ -49,9 +49,10 @@ public class QQServer {
     public void sendOfflineMessage(String getterId, ArrayList<Message> messages){
         //获取与getterId连接的输出流
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(ManageServerConnectClientThread.getServerConnectClientThread(getterId).getSocket().getOutputStream());
+            ObjectOutputStream oos = null;
             //将消息发送给对应的用户
             for(Message message : messages){
+                oos = new ObjectOutputStream(ManageServerConnectClientThread.getServerConnectClientThread(getterId).getSocket().getOutputStream());
                 oos.writeObject(message);
             }
         } catch (IOException e) {
